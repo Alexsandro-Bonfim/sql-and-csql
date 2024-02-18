@@ -1,0 +1,112 @@
+CREATE TABLE cliente (
+  cpf VARCHAR(15)  NOT NULL  ,
+  nome VARCHAR(255)  NULL  ,
+  datNasc DATE  NULL    ,
+PRIMARY KEY(cpf));
+
+
+CREATE TABLE modelo (
+  idmodelo INTEGER UNSIGNED  NOT NULL   AUTO_INCREMENT,
+  descricao VARCHAR(255)  NULL  ,
+  ano YEAR  NULL    ,
+PRIMARY KEY(idmodelo));
+
+CREATE TABLE patio (
+  idpatio INTEGER UNSIGNED  NOT NULL   AUTO_INCREMENT,
+  endereco VARCHAR(255)  NULL  ,
+  capacidade INTEGER UNSIGNED  NULL    ,
+PRIMARY KEY(idpatio));
+
+CREATE TABLE veiculo (
+  placa VARCHAR(8)  NOT NULL,
+  modelo_idmodelo INTEGER UNSIGNED  NOT NULL  ,
+  cliente_cpf VARCHAR(15)  NOT NULL  ,
+  cor VARCHAR(20)  NULL    ,
+PRIMARY KEY(placa)  ,
+INDEX veiculo_FKIndex1(cliente_cpf)  ,
+INDEX veiculo_FKIndex2(modelo_idmodelo));
+
+
+CREATE TABLE estaciona (
+  idestaciona INTEGER UNSIGNED  NOT NULL   AUTO_INCREMENT,
+  veiculo_placa VARCHAR(8)  NOT NULL  ,
+  patio_idpatio INTEGER UNSIGNED  NOT NULL  ,
+  dtEntrada DATETIME  NULL  ,
+  dtSaida DATETIME  NULL    ,
+PRIMARY KEY(idestaciona)  ,
+INDEX estaciona_FKIndex1(patio_idpatio)  ,
+INDEX estaciona_FKIndex2(veiculo_placa));
+
+
+/*Exiba a placa e o nome dos donos de todos os veículos.*/
+SELECT veiculo.placa, cliente.nome
+FROM Veiculo
+JOIN cliente ON veiculo.cliente_cpf = cliente.cpf;
+
+SELECT v.placa, c.nome
+FROM veiculo v
+inner JOIN cliente c ON v.cliente_cpf = c.cpf;
+
+
+
+
+/*Exiba o CPF e o nome do cliente que possui o veiculo de placa GHI9012*/
+select c.cpf,c.nome, v.placa
+from cliente c
+inner join veiculo v on v.cliente_cpf = c.cpf
+where placa='GjI8015';
+
+
+/*Exiba a placa e a cor do veículo que possui o código de estacionamento 1.*/
+select v.placa,v.cor
+from veiculo v
+left join estaciona e on e.veiculo_placa = v.placa
+where idestaciona='1';
+
+select *
+from veiculo v
+left join estaciona e on e.veiculo_placa = v.placa
+where idestaciona='1';
+
+
+
+/*Exiba a placa, o ano do veículo e a descrição de seu modelo, se ele possuir ano a partir de
+2000.*/
+select v.placa,m.descricao, m.ano
+from modelo m
+left join veiculo v on m.idmodelo = v.modelo_idmodelo
+where m.descricao='2000';
+
+select v.placa,m.descricao
+from modelo m
+left join veiculo v on m.idmodelo = v.modelo_idmodelo
+where m.descricao='2000';
+
+select *
+from modelo m
+left join veiculo v on m.idmodelo = v.modelo_idmodelo;
+
+/*Exiba o endereço, a data de entrada e de saída dos estacionamentos do veículo de placa DEF5678*/
+select *
+from patio p
+left join estaciona e on p.idpatio = e.patio_idpatio;
+
+select *
+from estaciona e
+right join patio p on p.idpatio = e.patio_idpatio;
+
+select *
+from estaciona e
+right join patio p on p.idpatio = e.patio_idpatio
+where veiculo_placa='DEF5678';
+
+
+/*Exiba a quantidade de vezes que os veículos de cor verde estacionaram.*/
+select*
+from veiculo v
+left join estaciona e on v.placa = e.veiculo_placa;
+
+select*
+from veiculo v
+left join estaciona e on v.placa = e.veiculo_placa
+where cor='verde';
