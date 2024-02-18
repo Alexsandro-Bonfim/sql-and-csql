@@ -1,0 +1,90 @@
+CREATE TABLE cliente (
+  idcliente INTEGER UNSIGNED    AUTO_INCREMENT,
+  nome_cliente VARCHAR(255)  NULL  ,
+  email VARCHAR(255)  NULL    ,
+PRIMARY KEY(idcliente));
+
+CREATE TABLE compras (
+  idcompras INTEGER UNSIGNED    AUTO_INCREMENT,
+  produtos_idprodutos INTEGER UNSIGNED    ,
+  cliente_idcliente INTEGER UNSIGNED    ,
+  quantidade INTEGER UNSIGNED  NULL    ,
+PRIMARY KEY(idcompras)  ,
+INDEX compras_FKIndex1(cliente_idcliente)  ,
+INDEX compras_FKIndex2(produtos_idprodutos));
+
+CREATE TABLE produtos (
+  idprodutos INTEGER UNSIGNED    AUTO_INCREMENT,
+  categoria_idcategoria INTEGER UNSIGNED   ,
+  nome_produto VARCHAR(255)  NULL  ,
+  preco FLOAT  NULL    ,
+PRIMARY KEY(idprodutos)  ,
+INDEX produtos_FKIndex1(categoria_idcategoria));
+
+
+CREATE TABLE categoria (
+  idcategoria INTEGER UNSIGNED   AUTO_INCREMENT,
+  nome_categoria VARCHAR(255)      ,
+PRIMARY KEY(idcategoria));
+
+
+-- Inserindo dados na tabela clientes com email nulo
+INSERT INTO cliente (nome_cliente, email) VALUES
+  ('Fernando Oliveira', NULL),
+  ('Gabriela Santos', 'gabriela@email.com'),
+  ('Daniel Silva', NULL);
+
+-- Inserindo dados na tabela produtos com preco nulo e categoria nula
+INSERT INTO produtos (nome_produto, preco,  categoria_idcategoria) VALUES
+  ('Mochila', NULL, 1),
+  ('Tablet', 299.99,NULL),
+  ('Óculos de Sol', 79.99, 2);
+
+
+-- Inserindo dados na tabela compras com id_cliente nulo e quantidade nula
+INSERT INTO compras (cliente_idcliente, produtos_idprodutos, quantidade) VALUES
+  (NULL, 2, 1),
+  (NULL, 1, NULL),
+  (2, 3, 2),
+  (3, NULL, 3);
+
+-- Inserindo dados na tabela categorias com nome nulo
+INSERT INTO categoria (nome_categoria) VALUES
+  ('Roupas'),
+ ('Eletrônicos'),
+  (NULL);
+
+
+
+-- Retorna o nome do cliente, produto, quantidade e preço da compra
+SELECT cliente.nome_cliente, produtos.nome_produto, compras.quantidade, produtos.preco
+FROM cliente
+INNER JOIN compras ON cliente.idcliente = compras.cliente_idcliente
+INNER JOIN produtos ON compras.produtos_idprodutos = produtos.idprodutos;
+
+-- Retorna todos os clientes e detalhes da compra se houver
+
+SELECT cliente.nome_cliente, produtos.nome_produto, compras.quantidade, produtos.preco
+FROM cliente
+LEFT JOIN compras ON cliente.idcliente = compras.cliente_idcliente
+LEFT JOIN produtos ON compras.produtos_idprodutos = produtos.idprodutos;
+
+
+-- Retorna todas as compras e nome do cliente se aplicável
+
+SELECT cliente.nome_cliente, produtos.nome_produto, compras.quantidade, produtos.preco
+FROM cliente
+RIGHT JOIN compras ON cliente.idcliente = compras.cliente_idcliente
+RIGHT JOIN produtos ON compras.produtos_idprodutos = produtos.idprodutos;
+
+-- Retorna o nome da categoria e o nome dos produtos pertencentes a essa categoria
+
+SELECT categoria.nome_categoria, produtos.nome_produto
+FROM categoria
+INNER JOIN produtos ON categoria.idcategoria = produtos.categoria_idcategoria;
+
+-- Retorna o nome da categoria e o nome dos produtos, incluindo produtos sem categoria
+
+SELECT categoria.nome_categoria, produtos.nome_produto
+FROM categoria
+RIGHT JOIN produtos ON categoria.idcategoria = produtos.categoria_idcategoria;
