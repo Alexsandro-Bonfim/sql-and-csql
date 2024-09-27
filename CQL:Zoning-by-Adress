@@ -1,0 +1,44 @@
+CREATE TABLE zoning_by_address (
+objectid int PRIMARY KEY,
+full_street_name text,
+zoning_ztype text,
+base_zone text,
+base_zone_category text,
+parent_place_id int,
+place_id int,
+segment_id int
+);
+
+INSERT INTO zoning_by_address (objectid, full_street_name, zoning_ztype, base_zone, base_zone_category, parent_place_id, place_id, segment_id) VALUES (2452406, '9420 EDMUNDSBURY DR', 'SF-4A', 'SF-4A', 'Single Family Small Lot', 3214940, 3215073, 3214948);
+INSERT INTO zoning_by_address (objectid, full_street_name, zoning_ztype, base_zone, base_zone_category, parent_place_id, place_id, segment_id) VALUES (2452009, '8038 MESA DR', 'LR', 'LR', 'Neighborhood Commercial', 5080, 308174, 2013672);
+INSERT INTO zoning_by_address (objectid, full_street_name, zoning_ztype, base_zone, base_zone_category, parent_place_id, place_id, segment_id) VALUES (2451629, '8805 MILTON LEASE DR', 'SF-4A', 'SF-4A', 'Single Family Small Lot', 3214944, 3214979, 3214943);
+INSERT INTO zoning_by_address (objectid, full_street_name, zoning_ztype, base_zone, base_zone_category, parent_place_id, place_id, segment_id) VALUES (2452150, '9704 MURMURING CREEK DR', 'SF-1-NP', 'SF-1', 'Single Family Large Lot', 5342, 950247, 3212717);
+INSERT INTO zoning_by_address (objectid, full_street_name, zoning_ztype, base_zone, base_zone_category, parent_place_id, place_id, segment_id) VALUES (2452091, '9716 SPANISH WELLS DR', 'PUD', 'PUD', 'Planned Unit Development', 3145259, 3214582, 3187872);
+
+# Python code for this
+
+# Define the CQL table creation statement
+cql_create_table = '''
+CREATE TABLE zoning_by_address (
+    objectid int PRIMARY KEY,
+    full_street_name text,
+    zoning_ztype text,
+    base_zone text,
+    base_zone_category text,
+    parent_place_id int,
+    place_id int,
+    segment_id int
+);
+'''
+
+# Generate CQL insert statements for the first few rows
+insert_statements = []
+for index, row in df.head(5).iterrows():
+    insert_statements.append(f"INSERT INTO zoning_by_address (objectid, full_street_name, zoning_ztype, base_zone, base_zone_category, parent_place_id, place_id, segment_id) VALUES ({row['OBJECTID']}, '{row['FULL_STREET_NAME']}', '{row['ZONING_ZTYPE']}', '{row['BASE_ZONE']}', '{row['BASE_ZONE_CATEGORY']}', {row['PARENT_PLACE_ID']}, {row['PLACE_ID']}, {row['SEGMENT_ID']});")
+
+# Print the CQL table creation statement and the insert statements
+print(cql_create_table)
+for statement in insert_statements:
+    print(statement)
+
+print("CQL statements generated successfully.")
